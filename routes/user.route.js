@@ -43,7 +43,7 @@ userRouter.post("/login",async(req,res)=>{
         return res.status(401).json({msg:"user are not found"})
     }
         const convpass = await bcrypt.compare(password,user.password)
-        const token = jwt.sign({userId:user._Id},process.env.jwt_key,{
+        const token = jwt.sign({userId:user._Id},process.env.jwt_Key,{
             expiresIn:"5min",
         });
         if (convpass){
