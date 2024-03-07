@@ -1,7 +1,9 @@
 const express = require("express")
 const cors = require("cors")
+const fs = require("fs")
 const { connection } = require("./config/db")
 const { userRouter } = require("./routes/user.route")
+const { videoRouter } = require("./routes/videos.route")
 require("dotenv").config()
 
 
@@ -12,7 +14,15 @@ const app = express()
 app.use(express.json())
 app.use(cors())
 
+const uploadsDirectory = 'uploads';
+if (!fs.existsSync(uploadsDirectory)) {
+  fs.mkdirSync(uploadsDirectory);
+}
+
+
+
 app.use("/user",userRouter)
+app.use('/video',videoRouter)
 
 app.get("/",(req,res)=>{
     res.send("Welcome TO Masai Live Streaming App🙏")
