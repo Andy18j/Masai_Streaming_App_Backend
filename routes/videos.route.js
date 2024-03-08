@@ -43,18 +43,26 @@ videoRouter.post('/upload', upload.single('video'), async (req, res) => {
   }
 });
 
-videoRouter.get('/videos', async (req, res) => {
+// Define route for serving videos
+videoRouter.get('/videos/:filename', async (req, res) => {
   try {
-    // Fetch all video documents from the database
-    const videos = await videoModel.find();
+    // Fetch video document by filename from the database
+    const video = await videoModel.findOne({ filename: req.params.filename });
 
-    res.status(200).json({ videos });
+    if (!video) {
+      return res.status(404).json({ error: 'Video not found' });
+    }
+
+    // Set response headers to specify content type
+    res.set('Content-Type', video.contentType);
+
+    // Send the video file as a response
+    res.sendFile(video.path);
   } catch (error) {
-    console.error('Error fetching videos:', error);
-    res.status(500).json({ error: 'An error occurred while fetching videos' });
+    console.error('Error fetching video:', error);
+    res.status(500).json({ error: 'An error occurred while fetching the video' });
   }
 });
-
 
 module.exports = {
   videoRouter
